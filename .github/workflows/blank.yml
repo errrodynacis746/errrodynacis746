@@ -1,0 +1,62 @@
+import pygame
+import sys
+
+# Initialize Pygame
+pygame.init()
+
+# Constants
+WIDTH, HEIGHT = 800, 600
+PLAYER_SIZE = 50
+PLAYER_COLOR = (0, 0, 255)
+BULLET_COLOR = (255, 0, 0)
+BULLET_SPEED = 5
+
+# Create the game window
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Simple Shooter Game")
+
+# Player attributes
+player_x = WIDTH // 2 - PLAYER_SIZE // 2
+player_y = HEIGHT - 2 * PLAYER_SIZE
+player_speed = 5
+
+# Bullet attributes
+bullet_x = 0
+bullet_y = 0
+bullet_state = "ready"  # "ready" or "fire"
+
+# Game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        # Check for key presses
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                player_x -= player_speed
+            if event.key == pygame.K_RIGHT:
+                player_x += player_speed
+            if event.key == pygame.K_SPACE:
+                if bullet_state == "ready":
+                    bullet_x = player_x + PLAYER_SIZE // 2
+                    bullet_y = player_y
+                    bullet_state = "fire"
+
+    # Update bullet position
+    if bullet_state == "fire":
+        bullet_y -= BULLET_SPEED
+        pygame.draw.rect(screen, BULLET_COLOR, (bullet_x, bullet_y, 5, 10))
+        if bullet_y <= 0:
+            bullet_state = "ready"
+
+    # Update player position
+    pygame.draw.rect(screen, PLAYER_COLOR, (player_x, player_y, PLAYER_SIZE, PLAYER_SIZE))
+
+    pygame.display.update()
+    screen.fill((0, 0, 0))
+
+# Quit Pygame
+pygame.quit()
+sys.exit()
